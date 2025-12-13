@@ -1,0 +1,63 @@
+/* client/src/index.css */
+@import 'antd/dist/reset.css';
+
+:root {
+  --honda-red: #E4002B;
+  --honda-dark: #1F1F1F;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  /* APPLY POPPINS FONT HERE */
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; 
+  background-color: #f0f2f5;
+}
+
+/* Force Ant Design Components to use Poppins too */
+.ant-btn, .ant-input, .ant-menu, .ant-typography, h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* --- OVERRIDES TO MAKE IT HONDA THEMED --- */
+
+/* 1. Primary Buttons (Red) */
+.ant-btn-primary {
+  background-color: var(--honda-red) !important;
+  border-color: var(--honda-red) !important;
+}
+.ant-btn-primary:hover {
+  background-color: #b30022 !important; /* Darker Red on hover */
+  border-color: #b30022 !important;
+}
+
+/* 2. Text Links & Accents (Red) */
+a {
+  color: var(--honda-red);
+}
+a:hover {
+  color: #b30022;
+}
+
+/* 3. Menu Selected Item (Red Highlight) */
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: var(--honda-red) !important;
+}
+
+/* 4. Table Header (Clean Grey) */
+.ant-table-thead > tr > th {
+  background: #fafafa !important;
+  color: #333;
+  font-weight: 600;
+}
+
+/* 5. Inputs (Red Focus) */
+.ant-input:focus, .ant-input-focused, .ant-select-focused .ant-select-selector {
+  border-color: var(--honda-red) !important;
+  box-shadow: 0 0 0 2px rgba(228, 0, 43, 0.2) !important;
+}
+
+/* 6. Spinners / Loaders */
+.ant-spin-dot-item {
+  background-color: var(--honda-red) !important;
+}
