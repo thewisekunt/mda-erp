@@ -843,6 +843,20 @@ app.get('/api/dashboard/stats', authenticate, async (req, res) => {
     }
 });
 
+// ==========================================
+// 13. SERVE FRONTEND (STATIC FILES)
+// ==========================================
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// The "Catch-all" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+// ------------------------------------------
+// (Paste above this line)
 const PORT = process.env.PORT || 5000; 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
