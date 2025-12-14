@@ -46,6 +46,11 @@ const authenticate = (req, res, next) => {
 // ==========================================
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
+// --- ADD THIS DEBUG LOG ---
+    console.log("Login Attempt:");
+    console.log("Username received:", `'${username}'`); // Quotes help see spaces
+    console.log("Password received:", `'${password}'`);
+    // --------------------------
     try {
         const [users] = await db.query("SELECT * FROM `Users` WHERE `Username` = ?", [username]);
         if (users.length === 0) return res.status(401).json({ error: "User not found" });
