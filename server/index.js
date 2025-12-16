@@ -44,15 +44,13 @@ const authenticate = (req, res, next) => {
 // ==========================================
 // 3. AUTH API (FIXED: HYBRID CHECK)
 // ==========================================
+
 app.post('/api/login', async (req, res) => {
     let { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ error: "Missing" });
     
-    // 1. Mobile Fix: Remove accidental spaces
-    if (!username || !password) return res.status(400).json({ error: "Missing fields" });
     username = username.trim();
     password = password.trim();
-
-    console.log("Login Attempt:", username); // Debug log
 
     try {
         const [users] = await db.query("SELECT * FROM `Users` WHERE `Username` = ?", [username]);
@@ -61,24 +59,16 @@ app.post('/api/login', async (req, res) => {
         const user = users[0];
         let isMatch = false;
 
-        // CHECK 1: Try Plain Text (For your Admin account)
-        if (password === user.Password) {
-            isMatch = true;
-        } 
-        // CHECK 2: Try Hashed (For your Sales account)
-        else if (user.Password.startsWith('$2b$') || user.Password.startsWith('$2a$')) {
-            isMatch = await bcrypt.compare(password, user.Password);
-        }
+        // 1. Check Plain Text (For Admin)
+        if (password === user.Password) isMatch = true;
+        // 2. Check Hash (For Sales)
+        else if (user.Password.startsWith('$2b$')) isMatch = await bcrypt.compare(password, user.Password);
 
         if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
 
         const token = jwt.sign({ id: user.User_ID, role: user.Role, name: user.Full_Name }, SECRET_KEY, { expiresIn: '12h' });
         res.json({ token, user: { name: user.Full_Name, role: user.Role } });
-
-    } catch (err) { 
-        console.error("Login Error:", err);
-        res.status(500).json({ error: "Login failed" }); 
-    }
+    } catch (err) { res.status(500).json({ error: "Login failed" }); }
 });
 
 // ==========================================
