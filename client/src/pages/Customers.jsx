@@ -60,7 +60,7 @@ export default function Customers() {
 
     const fetchCustomers = () => {
         setLoading(true);
-        axios.get('http://localhost:5000/api/customers')
+        axios.get('/api/customers')
             .then(res => {
                 const data = Array.isArray(res.data) ? res.data : [];
                 setCustomers(data);
@@ -95,7 +95,7 @@ export default function Customers() {
         const val = e.target.value;
         if (val.length === 6) {
             try {
-                const res = await axios.get(`http://localhost:5000/api/master/locations/${val}`);
+                const res = await axios.get(`/api/master/locations/${val}`);
                 if(res.data.length > 0) { 
                     const opts = res.data.map(l => ({ value: l.Post_Office, label: l.Post_Office, ...l }));
                     setLocationOptions(opts); 
@@ -111,7 +111,7 @@ export default function Customers() {
 
     const showJourney = (record) => {
         setSelectedCust(record);
-        axios.get(`http://localhost:5000/api/customers/journey/${record['Cust ID']}`)
+        axios.get(`/api/customers/journey/${record['Cust ID']}`)
             .then(res => {
                 const items = (Array.isArray(res.data) ? res.data : []).map(item => ({
                     color: item.color,
@@ -146,7 +146,7 @@ export default function Customers() {
 
     const handleDelete = (id) => {
         if(window.confirm("Permanently delete customer?")) {
-            axios.delete(`http://localhost:5000/api/customers/${id}`).then(() => { message.success("Deleted"); fetchCustomers(); });
+            axios.delete(`/api/customers/${id}`).then(() => { message.success("Deleted"); fetchCustomers(); });
         }
     };
 
@@ -165,7 +165,7 @@ export default function Customers() {
                 else formData.append(k, values[k]);
             }
         });
-        const req = editingCust ? axios.put(`http://localhost:5000/api/customers/${editingCust['Cust ID']}`, formData) : axios.post('http://localhost:5000/api/customers', formData);
+        const req = editingCust ? axios.put(`/api/customers/${editingCust['Cust ID']}`, formData) : axios.post('/api/customers', formData);
         req.then(() => { setIsModalOpen(false); fetchCustomers(); message.success("Saved Successfully"); }).catch(err => message.error("Save Failed"));
     };
 
