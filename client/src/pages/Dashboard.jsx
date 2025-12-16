@@ -12,7 +12,7 @@ export default function Dashboard() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/dashboard/stats')
+        axios.get('/api/dashboard/stats')
             .then(res => {
                 setStats(res.data);
                 setLoading(false);
