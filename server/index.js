@@ -41,28 +41,7 @@ const authenticate = (req, res, next) => {
     return next();
 };
 
-// ==========================================
-// 3. AUTH API
-// ==========================================
-app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
-// --- ADD THIS DEBUG LOG ---
-    console.log("Login Attempt:");
-    console.log("Username received:", `'${username}'`); // Quotes help see spaces
-    console.log("Password received:", `'${password}'`);
-    // --------------------------
-    try {
-        const [users] = await db.query("SELECT * FROM `Users` WHERE `Username` = ?", [username]);
-        if (users.length === 0) return res.status(401).json({ error: "User not found" });
-
-        const user = users[0];
-        const isMatch = (password === user.Password); 
-        if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
-
-        const token = jwt.sign({ id: user.User_ID, role: user.Role, name: user.Full_Name }, SECRET_KEY, { expiresIn: '12h' });
-        res.json({ token, user: { name: user.Full_Name, role: user.Role } });
-    } catch (err) { res.status(500).json({ error: "Login failed" }); }
-});
+https://github.com/thewisekunt/mda-erp/blob/main/server/index.js
 
 // ==========================================
 // 4. MASTER DATA APIs
