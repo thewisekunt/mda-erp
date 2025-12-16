@@ -41,7 +41,7 @@ export default function Accounts() {
         setLoading(true);
         setData(null); 
         
-        axios.get(`http://localhost:5000/api/accounts/summary/${frameNo}`)
+        axios.get(`/api/accounts/summary/${frameNo}`)
             .then(res => {
                 setData(res.data);
                 setLoading(false);
@@ -66,7 +66,7 @@ export default function Accounts() {
             frameNo: data.sale['Frame No'], 
             date: values.date.format('YYYY-MM-DD')
         };
-        axios.post('http://localhost:5000/api/accounts/pay', payload).then(() => {
+        axios.post('/api/accounts/pay', payload).then(() => {
             message.success("Payment Recorded");
             setPayModal(false);
             handleSearch(); 
@@ -75,7 +75,7 @@ export default function Accounts() {
 
     const handleFinance = (values) => {
         if (!data?.sale) return;
-        axios.post('http://localhost:5000/api/accounts/finance', { ...values, frameNo: data.sale['Frame No'] })
+        axios.post('/api/accounts/finance', { ...values, frameNo: data.sale['Frame No'] })
             .then(() => {
                 message.success("Finance DO Recorded");
                 setFinanceModal(false);
@@ -85,7 +85,7 @@ export default function Accounts() {
 
     const handleCredit = (values) => {
         if (!data?.sale) return;
-        axios.post('http://localhost:5000/api/accounts/credit', {
+        axios.post('/api/accounts/credit', {
             frameNo: data.sale['Frame No'],
             custId: data.customer.custId,
             amount: values.creditAmount,
@@ -99,7 +99,7 @@ export default function Accounts() {
     };
 
     const generateGatePass = () => {
-        axios.post('http://localhost:5000/api/gatepass/generate', { frameNo: data.sale['Frame No'] })
+        axios.post('/api/gatepass/generate', { frameNo: data.sale['Frame No'] })
             .then(() => {
                 message.success("Gate Pass Generated!");
                 handleSearch();
