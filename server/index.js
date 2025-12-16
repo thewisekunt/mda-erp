@@ -41,7 +41,45 @@ const authenticate = (req, res, next) => {
     return next();
 };
 
-https://github.com/thewisekunt/mda-erp/blob/main/server/index.js
+// ==========================================
+// 3. AUTH API (FIXED: HYBRID CHECK)
+// ==========================================
+app.post('/api/login', async (req, res) => {
+    let { username, password } = req.body;
+    
+    // 1. Mobile Fix: Remove accidental spaces
+    if (!username || !password) return res.status(400).json({ error: "Missing fields" });
+    username = username.trim();
+    password = password.trim();
+
+    console.log("Login Attempt:", username); // Debug log
+
+    try {
+        const [users] = await db.query("SELECT * FROM `Users` WHERE `Username` = ?", [username]);
+        if (users.length === 0) return res.status(401).json({ error: "User not found" });
+
+        const user = users[0];
+        let isMatch = false;
+
+        // CHECK 1: Try Plain Text (For your Admin account)
+        if (password === user.Password) {
+            isMatch = true;
+        } 
+        // CHECK 2: Try Hashed (For your Sales account)
+        else if (user.Password.startsWith('$2b$') || user.Password.startsWith('$2a$')) {
+            isMatch = await bcrypt.compare(password, user.Password);
+        }
+
+        if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
+
+        const token = jwt.sign({ id: user.User_ID, role: user.Role, name: user.Full_Name }, SECRET_KEY, { expiresIn: '12h' });
+        res.json({ token, user: { name: user.Full_Name, role: user.Role } });
+
+    } catch (err) { 
+        console.error("Login Error:", err);
+        res.status(500).json({ error: "Login failed" }); 
+    }
+});
 
 // ==========================================
 // 4. MASTER DATA APIs
