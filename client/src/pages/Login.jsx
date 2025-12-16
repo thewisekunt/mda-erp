@@ -11,7 +11,7 @@ export default function Login({ onLogin }) {
     const handleLogin = async (values) => {
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/login', values);
+            const res = await axios.post('/api/login', values);
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
             message.success(`Welcome back, ${res.data.user.name}`);
